@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.sg.model.Account;
 
-import static java.math.BigDecimal.ONE;
 import static java.time.LocalDate.now;
 
 import org.sg.model.Operation;
@@ -26,30 +25,30 @@ class AccountServiceTest {
     @Test
     void should_withdraw_to_account() {
         // given
-        AccountRepository accountRepository = getAccountRepository(BigDecimal.TEN);
+        AccountRepository accountRepository = getAccountRepository(new BigDecimal("100"));
         Account account = accountRepository.getAccount();
         AccountService accountService = new AccountService(accountRepository, getAccountOperationRepository());
         //when
-        accountService.withDraw(account, ONE);
+        accountService.withDraw(account, new BigDecimal("50"));
         //then
         Account accountFinal = accountRepository.getAccount();
         assertNotNull(accountFinal);
-        assertEquals(accountFinal.getBalance(), new BigDecimal("9"));
+        assertEquals(accountFinal.getBalance(), new BigDecimal("50"));
     }
 
 
     @Test
     void should_deposit_to_account() {
         // given
-        AccountRepository accountRepository = getAccountRepository(BigDecimal.TEN);
+        AccountRepository accountRepository = getAccountRepository(new BigDecimal("100"));
         Account account = accountRepository.getAccount();
         AccountService accountService = new AccountService(accountRepository, getAccountOperationRepository());
         //when
-        accountService.deposit(account, ONE);
+        accountService.deposit(account, new BigDecimal("50"));
         //then
         Account accountFinal = accountRepository.getAccount();
         assertNotNull(accountFinal);
-        assertEquals(accountFinal.getBalance(), new BigDecimal("11"));
+        assertEquals(accountFinal.getBalance(), new BigDecimal("150"));
     }
 
     @Test
@@ -61,17 +60,17 @@ class AccountServiceTest {
         AccountService accountService = new AccountService(accountRepository, accountOperationRepository);
 
         // when
-        accountService.deposit(account, ONE);
-        accountService.withDraw(account, new BigDecimal("2"));
-        accountService.deposit(account, new BigDecimal("3"));
+        accountService.deposit(account, new BigDecimal("50"));
+        accountService.withDraw(account, new BigDecimal("60"));
+        accountService.deposit(account, new BigDecimal("70"));
 
         // then
-        List<Operation> history = accountService.consultOperationsHistory(account);
+        List<Operation> history = accountService.operationsHistory(account);
         assertNotNull(history);
         assertEquals(3, history.size());
-        assertEquals(history.get(0), new Operation(DEPOSIT, now(), ONE));
-        assertEquals(history.get(1), new Operation(WITHDRAW, now(), new BigDecimal("2")));
-        assertEquals(history.get(2), new Operation(DEPOSIT, now(), new BigDecimal("3")));
+        assertEquals(history.get(0), new Operation(DEPOSIT, now(), new BigDecimal("50")));
+        assertEquals(history.get(1), new Operation(WITHDRAW, now(), new BigDecimal("60")));
+        assertEquals(history.get(2), new Operation(DEPOSIT, now(), new BigDecimal("70")));
     }
 
 

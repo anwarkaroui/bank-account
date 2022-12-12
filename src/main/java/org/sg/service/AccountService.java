@@ -33,7 +33,7 @@ public class AccountService {
         accountOperationRepository.saveOperation(account, new Operation(DEPOSIT, LocalDate.now(), amount));
     }
 
-    public List<Operation> consultOperationsHistory(Account account) {
+    public List<Operation> operationsHistory(Account account) {
         return accountOperationRepository.getHistory(account);
     }
 
