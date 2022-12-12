@@ -11,7 +11,7 @@ class OperationTest {
 
     @Test
     void should_not_create_invalid_operation() {
-        assertThrows(Exception.class, () -> new Operation(null, null, null));
+        assertThrows(IllegalArgumentException.class, () -> new Operation(null, null, null));
     }
 
 }
