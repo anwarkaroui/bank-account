@@ -151,3 +151,22 @@ JOIN otc.t_referentialvalue rv ON rv.id = br.producttype_id
 WHERE b.bankcode = :bankcode
   AND br.bincardtrackstart = :bincardtrackstart
   AND br.bincardtrackend   = :bincardtrackend;
+
+UPDATE otc.t_binrange br
+SET producttype_id = CASE
+  WHEN rv_old.label = 'Visa' THEN rv_cbvisa.id
+  WHEN rv_old.label = 'Mastercard' THEN rv_cbmaster.id
+  ELSE br.producttype_id
+END
+FROM otc.t_issuer i,
+     otc.t_bank b,
+     otc.t_referentialvalue rv_old,
+     (SELECT id FROM otc.t_referentialvalue WHERE label = 'CbVisa'   LIMIT 1) rv_cbvisa,
+     (SELECT id FROM otc.t_referentialvalue WHERE label = 'CbMaster' LIMIT 1) rv_cbmaster
+WHERE br.issuer_id = i.id
+  AND b.id = i.externalbankid
+  AND rv_old.id = br.producttype_id
+  AND b.bankcode = :bankcode
+  AND br.bincardtrackstart = :bincardtrackstart
+  AND br.bincardtrackend   = :bincardtrackend
+  AND rv_old.label IN ('Visa', 'Mastercard');
