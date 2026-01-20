@@ -22,3 +22,9 @@ WHERE b.bankcode = '25648'
   AND br.bincardtrackstart = '4700000000000000000'
   AND br.bincardtrackend   = '4851111111111111111'
   AND rv.label IN ('Visa', 'Mastercard');
+
+SELECT br.id, br.bincardtrackstart, br.bincardtrackend, br.issuer_id, br.producttype_id, b.bankcode
+FROM otc.t_binrange br
+JOIN otc.t_issuer i ON i.id = br.issuer_id
+JOIN otc.t_bank b ON b.id = i.externalbankid
+WHERE b.bankcode = '25648';
