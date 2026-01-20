@@ -137,3 +137,17 @@ WHERE br.issuer_id = i.id
   AND br.bincardtrackstart = :bincardtrackstart
   AND br.bincardtrackend   = :bincardtrackend
   AND rv_old.label IN ('Visa', 'Mastercard');
+
+
+SELECT
+  b.bankcode,
+  br.bincardtrackstart,
+  br.bincardtrackend,
+  rv.label AS producttype_label
+FROM otc.t_binrange br
+JOIN otc.t_issuer i ON i.id = br.issuer_id
+JOIN otc.t_bank b ON b.id = i.externalbankid
+JOIN otc.t_referentialvalue rv ON rv.id = br.producttype_id
+WHERE b.bankcode = :bankcode
+  AND br.bincardtrackstart = :bincardtrackstart
+  AND br.bincardtrackend   = :bincardtrackend;
