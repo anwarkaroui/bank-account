@@ -170,3 +170,44 @@ WHERE br.issuer_id = i.id
   AND br.bincardtrackstart = :bincardtrackstart
   AND br.bincardtrackend   = :bincardtrackend
   AND rv_old.label IN ('Visa', 'Mastercard');
+
+-----------------
+WITH ref AS (
+  SELECT
+    COUNT(*) FILTER (WHERE label = 'CbVisa')   AS cbvisa_cnt,
+    MAX(id)  FILTER (WHERE label = 'CbVisa')   AS cbvisa_id,
+    COUNT(*) FILTER (WHERE label = 'CbMaster') AS cbmaster_cnt,
+    MAX(id)  FILTER (WHERE label = 'CbMaster') AS cbmaster_id
+  FROM otc.t_referentialvalue
+  WHERE label IN ('CbVisa', 'CbMaster')
+)
+UPDATE otc.t_binrange br
+SET producttype_id = CASE
+  WHEN rv_old.label = 'Visa'       THEN ref.cbvisa_id
+  WHEN rv_old.label = 'Mastercard' THEN ref.cbmaster_id
+  ELSE br.producttype_id
+END
+FROM ref,
+     otc.t_issuer i,
+     otc.t_bank b,
+     otc.t_referentialvalue rv_old
+WHERE br.issuer_id = i.id
+  AND b.id = i.externalbankid
+  AND rv_old.id = br.producttype_id
+  AND b.bankcode = :bankcode
+  AND br.bincardtrackstart = :bincardtrackstart
+  AND br.bincardtrackend   = :bincardtrackend
+  AND rv_old.label IN ('Visa', 'Mastercard')
+  -- garde-fous prod : il faut exactement 1 CbVisa et 1 CbMaster
+  AND ref.cbvisa_cnt = 1
+  AND ref.cbmaster_cnt = 1;
+
+
+SELECT
+  COUNT(*) FILTER (WHERE label='CbVisa')   AS cbvisa_cnt,
+  COUNT(*) FILTER (WHERE label='CbMaster') AS cbmaster_cnt
+FROM otc.t_referentialvalue
+WHERE label IN ('CbVisa','CbMaster');
+
+
+
