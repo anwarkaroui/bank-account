@@ -372,3 +372,131 @@ Jsp
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<html>
+<head>
+    <title>Import TokenRequestor (AJAX)</title>
+</head>
+<body>
+
+<h2>Importer CSV (AJAX)</h2>
+
+<div style="margin-bottom:10px;">
+    <input type="file" id="csvFile" accept=".csv" />
+    <button id="importBtn" type="button" onclick="uploadCsv()">Importer</button>
+    <span id="loading" style="margin-left:10px;"></span>
+</div>
+
+<div id="msg" style="color:red; margin-bottom:10px;"></div>
+
+<p>
+    ✅ Lignes mises à jour : <b id="updatedCount">0</b><br/>
+    ⚠️ Lignes ignorées : <b id="ignoredCount">0</b>
+</p>
+
+<h3>Tokens mis à jour</h3>
+
+<table border="1" cellpadding="6" cellspacing="0" style="width:700px;">
+    <thead>
+        <tr>
+            <th>TokenRequestId</th>
+            <th>Status</th>
+            <th>Old Status</th>
+        </tr>
+    </thead>
+    <tbody id="resultBody">
+        <tr><td colspan="3" style="text-align:center;">Aucune donnée</td></tr>
+    </tbody>
+</table>
+
+<script>
+async function uploadCsv() {
+    const fileInput = document.getElementById("csvFile");
+    const btn = document.getElementById("importBtn");
+    const msg = document.getElementById("msg");
+    const loading = document.getElementById("loading");
+
+    msg.innerText = "";
+
+    if (!fileInput.files || fileInput.files.length === 0) {
+        msg.innerText = "Veuillez sélectionner un fichier CSV.";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    // UI: disable pendant import
+    btn.disabled = true;
+    const oldBtnText = btn.innerText;
+    btn.innerText = "Import en cours...";
+    loading.innerText = "⏳";
+
+    try {
+        const resp = await fetch("<c:url value='/tokenrequestor/import-ajax'/>", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok) {
+            msg.innerText = data && data.message ? data.message : "Erreur import.";
+            return;
+        }
+
+        // stats
+        document.getElementById("updatedCount").innerText = data.updatedCount;
+        document.getElementById("ignoredCount").innerText = data.ignoredCount;
+
+        // table
+        const tbody = document.getElementById("resultBody");
+        tbody.innerHTML = "";
+
+        if (!data.rows || data.rows.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>Aucune mise à jour</td></tr>";
+            return;
+        }
+
+        data.rows.forEach(r => {
+            const tr = document.createElement("tr");
+
+            const td1 = document.createElement("td");
+            td1.innerText = r.tokenRequestId;
+
+            const td2 = document.createElement("td");
+            td2.innerText = r.status;
+
+            const td3 = document.createElement("td");
+            td3.innerText = r.oldStatus;
+
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            tr.appendChild(td3);
+
+            tbody.appendChild(tr);
+        });
+
+    } catch (e) {
+        msg.innerText = "Erreur réseau / serveur.";
+    } finally {
+        // UI: re-enable
+        loading.innerText = "";
+        btn.disabled = false;
+        btn.innerText = oldBtnText;
+    }
+}
+</script>
+
+</body>
+</html>
