@@ -403,3 +403,84 @@ document.getElementById("fileUpload").addEventListener("change", function () {
     }
   });
 </script>
+
+Tu peux faire ça avec du CSS + un <label> (le vrai <input type="file"> reste caché), et un petit JS pour remplacer “No file chosen” par “Aucun fichier choisi” (ou afficher le nom du fichier).
+Voici un exemple prêt à coller dans ta JSP.
+1) JSP / HTML
+Copier le code
+Jsp
+<form method="post" enctype="multipart/form-data"
+      action="<c:url value='/changestatus/import'/>">
+
+  <div class="file-upload">
+    <!-- input réel (caché) -->
+    <input type="file" id="csvFile" name="file" accept=".csv" required />
+
+    <!-- bouton “icône joindre” -->
+    <label for="csvFile" class="btn-attach" title="Joindre un fichier">
+      <span class="clip" aria-hidden="true">📎</span>
+      <span class="btn-text">Joindre un fichier</span>
+    </label>
+
+    <!-- texte à droite -->
+    <span id="fileName" class="file-name">Aucun fichier choisi</span>
+  </div>
+
+  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+  <button type="submit" id="importBtn">Importer</button>
+</form>
+2) CSS
+Copier le code
+Css
+/* Cache l'input natif */
+.file-upload input[type="file"]{
+  position: absolute;
+  left: -9999px;
+}
+
+/* Layout */
+.file-upload{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Bouton icône */
+.btn-attach{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid #999;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn-attach:hover{
+  filter: brightness(0.95);
+}
+
+.file-name{
+  font-style: italic;
+}
+3) JS (traduction + nom de fichier)
+Copier le code
+Html
+<script>
+  const input = document.getElementById('csvFile');
+  const fileName = document.getElementById('fileName');
+
+  input.addEventListener('change', () => {
+    if (input.files && input.files.length > 0) {
+      fileName.textContent = input.files[0].name;
+    } else {
+      fileName.textContent = 'Aucun fichier choisi';
+    }
+  });
+</script>
+✅ Résultat :
+Le bouton natif Choose File disparaît
+Tu as un bouton 📎 Joindre un fichier
+Le texte devient Aucun fichier choisi et se met à jour avec le nom du fichier
+Si tu veux une vraie icône (Font Awesome / Bootstrap Icons) au lieu de 📎, dis-moi ce que tu utilises déjà dans le projet (Bootstrap ? FA ?).
