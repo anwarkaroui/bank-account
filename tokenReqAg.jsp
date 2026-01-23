@@ -1,4 +1,4 @@
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+u<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -484,3 +484,55 @@ Le bouton natif Choose File disparaît
 Tu as un bouton 📎 Joindre un fichier
 Le texte devient Aucun fichier choisi et se met à jour avec le nom du fichier
 Si tu veux une vraie icône (Font Awesome / Bootstrap Icons) au lieu de 📎, dis-moi ce que tu utilises déjà dans le projet (Bootstrap ? FA ?).
+
+
+
+<style>
+  /* Cache l'input natif */
+  .file-input-hidden {
+    position: absolute;
+    left: -9999px;
+  }
+  /* Petit style pour le libellé du fichier */
+  #fileNameLabel {
+    margin-left: 10px;
+    font-style: italic;
+  }
+</style>
+
+<form method="post" enctype="multipart/form-data"
+      action="<c:url value='/changestatus/import'/>"
+      onsubmit="disableButton()">
+
+  <!-- Input file caché -->
+  <input id="fileInput" class="file-input-hidden" type="file" name="file" accept=".csv" required />
+
+  <!-- Bouton/icône "joindre" -->
+  <button type="button" class="btn btn-default" id="attachBtn" title="Joindre un fichier">
+    <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
+  </button>
+
+  <!-- Texte en français à la place de "No file chosen" -->
+  <span id="fileNameLabel">Aucun fichier choisi</span>
+
+  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+  <button type="submit" id="importBtn" class="btn btn-primary">Importer</button>
+</form>
+
+<script>
+  (function () {
+    const input = document.getElementById('fileInput');
+    const btn = document.getElementById('attachBtn');
+    const label = document.getElementById('fileNameLabel');
+
+    btn.addEventListener('click', () => input.click());
+
+    input.addEventListener('change', () => {
+      if (input.files && input.files.length > 0) {
+        label.textContent = input.files[0].name;
+      } else {
+        label.textContent = 'Aucun fichier choisi';
+      }
+    });
+  })();
+</script>
