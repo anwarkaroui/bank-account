@@ -215,3 +215,79 @@
         <script src="${rootjs}validate.js" type="text/javascript"></script>
 </tiles:putAttribute>
 </tiles:insertDefinition>
+
+
+Parfait 👍 c’est surtout du front JSP/HTML/CSS. Voilà comment faire proprement.
+1️⃣ Remplacer “Choose file” par une icône 📎
+On cache l’input type="file" natif et on déclenche le clic via un label stylé.
+JSP / HTML
+Copier le code
+Jsp
+<form method="post" enctype="multipart/form-data"
+      action="<c:url value='/changestatus/import'/>">
+
+    <input type="file" id="fileUpload" name="file" accept=".csv" required hidden />
+
+    <label for="fileUpload" class="file-label">
+        <i class="glyphicon glyphicon-paperclip"></i>
+        <span id="file-name">Aucun fichier choisi</span>
+    </label>
+
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
+    <a href="#" onclick="this.closest('form').submit()" class="import-link">
+        Changement du statut
+    </a>
+</form>
+2️⃣ Traduire “No file chosen” → “Aucun fichier choisi”
+On le fait en JavaScript, car ce texte vient du navigateur.
+Copier le code
+Html
+<script>
+document.getElementById("fileUpload").addEventListener("change", function () {
+    const fileName = this.files.length > 0
+        ? this.files[0].name
+        : "Aucun fichier choisi";
+    document.getElementById("file-name").textContent = fileName;
+});
+</script>
+3️⃣ Remplacer le bouton Importer par un lien
+Déjà fait ci-dessus avec :
+Copier le code
+Html
+<a href="#" onclick="this.closest('form').submit()" class="import-link">
+    Changement du statut
+</a>
+4️⃣ Un peu de CSS (important pour le rendu)
+Copier le code
+Css
+.file-label {
+    cursor: pointer;
+    color: #337ab7;
+    font-weight: 500;
+}
+
+.file-label i {
+    margin-right: 6px;
+}
+
+.import-link {
+    margin-left: 15px;
+    text-decoration: underline;
+    color: #5cb85c;
+    cursor: pointer;
+}
+
+.import-link:hover {
+    color: #449d44;
+}
+✅ Résultat final
+📎 Icône pour joindre un fichier
+🇫🇷 “Aucun fichier choisi”
+🔗 Lien “Changement du statut” au lieu d’un bouton
+Aucun impact backend / Spring / CSRF
+Si tu veux :
+Font Awesome au lieu de glyphicon
+empêcher l’envoi sans fichier avec un message custom
+ou un style Bootstrap plus clean
+👉 dis-moi 😄
