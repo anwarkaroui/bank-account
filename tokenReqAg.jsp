@@ -291,3 +291,73 @@ Font Awesome au lieu de glyphicon
 empêcher l’envoi sans fichier avec un message custom
 ou un style Bootstrap plus clean
 👉 dis-moi 😄
+
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<form method="post"
+      enctype="multipart/form-data"
+      action="<c:url value='/changestatus/import'/>"
+      style="display:flex; flex-direction:column; align-items:flex-start; gap:6px;">
+
+    <!-- INPUT FILE CACHÉ -->
+    <input type="file"
+           id="fileUpload"
+           name="file"
+           accept=".csv"
+           required
+           style="display:none;" />
+
+    <!-- ICÔNE + TEXTE -->
+    <label for="fileUpload" class="file-label">
+        <i class="glyphicon glyphicon-paperclip"></i>
+        <span id="file-name">Aucun fichier choisi</span>
+    </label>
+
+    <!-- CSRF -->
+    <input type="hidden"
+           name="${_csrf.parameterName}"
+           value="${_csrf.token}" />
+
+    <!-- LIEN SUBMIT EN DESSOUS -->
+    <a href="#"
+       class="import-link"
+       onclick="this.closest('form').submit(); return false;">
+        Changement du statut
+    </a>
+
+</form>
+
+<!-- JAVASCRIPT -->
+<script>
+document.getElementById("fileUpload").addEventListener("change", function () {
+    const fileName = this.files.length > 0
+        ? this.files[0].name
+        : "Aucun fichier choisi";
+    document.getElementById("file-name").textContent = fileName;
+});
+</script>
+
+<!-- CSS -->
+<style>
+.file-label {
+    cursor: pointer;
+    color: #337ab7;
+    font-weight: 500;
+}
+
+.file-label i {
+    margin-right: 6px;
+}
+
+.import-link {
+    margin-left: 22px; /* aligné sous le texte */
+    color: #5cb85c;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.import-link:hover {
+    color: #449d44;
+}
+</style>
