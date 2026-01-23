@@ -361,3 +361,45 @@ document.getElementById("fileUpload").addEventListener("change", function () {
     color: #449d44;
 }
 </style>
+
+
+<!-- HTML -->
+<div class="file-wrap">
+  <input id="file" type="file" hidden>
+  
+  <label for="file" class="btn-attach" title="Joindre un fichier">
+    📎
+  </label>
+
+  <span id="fileText" class="file-text">Aucun fichier joint</span>
+</div>
+
+<!-- CSS -->
+<style>
+  .file-wrap { display:flex; align-items:center; gap:10px; }
+
+  .btn-attach{
+    width:40px; height:40px;
+    display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid #ccc; border-radius:8px;
+    cursor:pointer; user-select:none;
+    font-size:18px;
+  }
+  .btn-attach:hover{ background:#f3f3f3; }
+
+  .file-text{ color:#555; font-size:14px; }
+</style>
+
+<!-- JS -->
+<script>
+  const input = document.getElementById('file');
+  const fileText = document.getElementById('fileText');
+
+  input.addEventListener('change', () => {
+    if (input.files && input.files.length > 0) {
+      fileText.textContent = input.files[0].name; // ou "1 fichier joint"
+    } else {
+      fileText.textContent = 'Aucun fichier joint';
+    }
+  });
+</script>
