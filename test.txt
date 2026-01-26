@@ -1,1 +1,5 @@
- @Query("select new com.stet.otc.model.dto.TokenRequestorAggregatorRow(t.providerId,t.providerName,count(t.providerId),tc.customerConnectionId) From TokenRequestor t LEFT OUTER JOIN t.tokenRequestorClient tc LEFT OUTER JOIN t.requestorType r group by tc.providerId,tc.providerName")
+voila la requette ci dessous
+
+@Query("select new com.stet.otc.model.dto.TokenRequestorAggregatorRow(t.providerId,t.providerName,count(t.providerId),tc.customerConnectionId) From TokenRequestor t LEFT OUTER JOIN t.tokenRequestorClient tc LEFT OUTER JOIN t.requestorType r group by tc.providerId,tc.providerName").
+
+j'ai ce probleme en java :[ERROR] ERROR: column "tokenreque0_.providerid" must appear in the GROUP BY clause or be used in an aggregate function
