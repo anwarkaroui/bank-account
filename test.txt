@@ -1,0 +1,1 @@
+ @Query("select new com.stet.otc.model.dto.TokenRequestorAggregatorRow(t.providerId,t.providerName,count(t.providerId),tc.customerConnectionId) From TokenRequestor t LEFT OUTER JOIN t.tokenRequestorClient tc LEFT OUTER JOIN t.requestorType r group by tc.providerId,tc.providerName")
