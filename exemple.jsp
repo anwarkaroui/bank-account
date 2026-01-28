@@ -128,3 +128,50 @@ function checkProviderName(input, index) {
                 </table>
             </div>
         </div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="table-container">
+            <table class="table table-striped hover" id="tokenRequestors-list">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Client</th>
+                    <th>Merchant</th>
+                    <th>Aggregator</th>
+                    <th>ID Aggregator</th>
+                    <th>SIRET</th>
+                    <th>Initial Status</th>
+                    <th>Current Status</th>
+                    <th>Hub</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="result" items="${results}">
+                    <tr>
+                        <td>${result.tokenType}</td>
+                        <td>${result.customerConnectionId}</td>
+                        <td>${result.tokenName}</td>
+                        <td>${result.providerName}</td>
+                        <td>${result.providerId}</td>
+                        <td>${result.siret}</td>
+                        <td>${result.initialStatus}</td>
+                        <td>${result.currentStatus}</td>
+                        <td>${result.hub}</td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
