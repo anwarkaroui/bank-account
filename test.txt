@@ -1,22 +1,24 @@
-voila la requette ci dessous
+CustCnxId,ReferenceDemande,TokReqAggregatorId,NomTokenRequestor,ListeSIRET,ListeSIREN,TokReqSecurity,TokReqUrl,TokenRequestorId,RequesterType,Action,TokReqStatus,RequestApiDate,TokReqCreatedDate
+CUSTCNX00001,MSGID000000000101,AGGR00000001,MON_COMMERCE_ABC,73282932000074,732829320,1,https://www.macommerce.fr,12345678901,COF-PAY,C,,20260128103045,
+CUSTCNX00001,MSGID000000000102,AGGR00000001,MON_COMMERCE_ABC,55210055400013,552100554,1,https://www.macommerce.fr,12345678901,COF-PAY,C,,20260128103045,
+CUSTCNX00002,MSGID000000000201,AGGR00000002,BOUTIQUE_XYZ,80897727800016,808977278,2,https://www.boutiquexyz.com,98765432109,COF-PAY,U,,20260128104510,20260128104530
 
-@Query("select new com.stet.otc.model.dto.TokenRequestorAggregatorRow(t.providerId,t.providerName,count(t.providerId),tc.customerConnectionId) From TokenRequestor t LEFT OUTER JOIN t.tokenRequestorClient tc LEFT OUTER JOIN t.requestorType r group by tc.providerId,tc.providerName").
 
-j'ai ce probleme en java :[ERROR] ERROR: column "tokenreque0_.providerid" must appear in the GROUP BY clause or be used in an aggregate function
+Correspondance avec la spécification
+CustCnxId → 12 AN ✔
+ReferenceDemande → 18 ANS (CustMsgId + TokReqNum) ✔
+TokReqAggregatorId → 12 AN ✔
+NomTokenRequestor → TXT (3–32) ✔
+ListeSIRET → 14 chiffres ✔
+ListeSIREN → 9 chiffres ✔
+TokReqSecurity → 1 ou 2 ✔
+TokReqUrl → ≤ 2048 ✔
+TokenRequestorId → 11 N ✔
+RequesterType → COF-PAY ✔
+Action → C (Create) ou U (Update) ✔
+TokReqStatus → vide (RUF / OTC maître) ✔
+RequestApiDate → aaaammjjhhmmss ✔
+TokReqCreatedDate → vide ou rempli selon le cas ✔
 
-
-@Query("""
-select new com.stet.otc.model.dto.TokenRequestorAggregatorRow(
-    t.providerId,
-    t.providerName,
-    count(t.providerId),
-    tc.customerConnectionId
-)
-from TokenRequestor t
-left join t.tokenRequestorClient tc
-left join t.requestorType r
-group by
-    t.providerId,
-    t.providerName,
-    tc.customerConnectionId
-""")
+CustCnxId,ReferenceDemande,TokReqAggregatorId,NomTokenRequestor,ListeSIRET,RequestApiDate
+CUSTCNX00001,MSGID000000000101,AGGR00000001,MON_COMMERCE_ABC,"73282932000074;55210055400013;80897727800016",20260128103045
