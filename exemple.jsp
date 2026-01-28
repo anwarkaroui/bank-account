@@ -91,3 +91,40 @@ function checkProviderName(input, index) {
     });
   }
 </script>
+
+<div class="row">
+            <div class="col-xs-12">
+                <table class="table table-striped hover nowrap-table-title" id="tokenRequestors-list">
+                    <thead>
+                    <tr>
+                        <th><spring:message code="type.token.requestor"/></th>
+                        <th><spring:message code="id.connection.client" /></th>
+                        <th><spring:message code="name.merchant" /></th>
+                        <th><spring:message code="name.tr.aggregator" /></th>
+                        <th><spring:message code="id.tr.aggregator" /></th>
+                        <th><spring:message code="siret" /></th>
+                        <th><spring:message code="initial.status" /></th>
+                        <th><spring:message code="current.status" /></th>
+                        <th><spring:message code="hub" /></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="result" items="${results}">
+
+                        <tr>
+                            <td>${result.tokenType}</td>
+                            <td>${result.customerConnectionId}</td>
+                            <td>${result.tokenName}</td>
+                            <td>${result.providerName}</td>
+                            <td>${result.providerId}</td>
+                            <td>${result.siret}</td>
+                            <td>${result.initialStatus}</td>
+                            <td>${result.currentStatus}</td>
+                            <td>${result.hub}</td>
+                        </tr
+
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
